@@ -6,7 +6,7 @@ public static class Operators
     private static Dictionary<char, int> operators = new Dictionary<char, int>() // Los operadores disponibles y el valor por el que se multiplicarán por el valor numérico del término 
     {
         {'!', 0},
-        {'^', 10},
+        {'^', 40},
         {'~', 1},
         {'*', 2}
     };
@@ -55,7 +55,7 @@ public static class Operators
             case '*':                                               // Si es '*':
                 int k = 1;                                          // Como este es acumulable, primero revisamos 
                 for (; query[i + k] == '*'; k++) ;                  // la cantidad de veces que se repite 
-                queryTerms[term] *= operators['*'] * k;             // Para luego calcular su valor y aumentárselo al término correspondiente
+                queryTerms[term] *= (int)Math.Pow(operators['*'], k);// Para luego calcular su valor y aumentárselo al término correspondiente
                 break;
         }
 

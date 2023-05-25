@@ -7,6 +7,7 @@ public static class MathTools
     public static float SimCos(float[,] D, int j, float[] q) // Calcula la similitud del coseno o similitud vectorial
     {
         // Calcula el coseno del ángulo de el vector fila del query por un vector columna de la matriz de términos
+        // cos(q, dj) = <q, dj>/||q||*||dj||
 
         float[] dj = new float[D.GetLength(0)]; // Tomamos la j-ésima columna de la matriz para poder multiplicarla por el vector
 

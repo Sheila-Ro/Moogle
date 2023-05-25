@@ -23,7 +23,7 @@ public static class Moogle
 
     public static SearchResult Query(string query) // Función principal, donde se empieza a computar el resultado de búsqueda 
     {        
-        if (D == null) ChargeCache();
+        if (D == null) LoadCache();
 
         QueryTerms(query);
 
@@ -44,7 +44,7 @@ public static class Moogle
 
     // Funciones que fundamentalmente utilizan las propiedades estáticas de la clase
     #region AuxiliaryFunctions
-    private static void ChargeCache() // En esta función se cargan todas las propiedades que luego no cambiarán 
+    private static void LoadCache() // En esta función se cargan todas las propiedades que luego no cambiarán 
     {
         // * Todas las descripciones de las propiedades se encuentran en la región Properties
 
