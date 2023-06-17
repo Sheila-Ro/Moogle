@@ -13,12 +13,12 @@ public static class Moogle
     private static Dictionary<string, int>? terms;  // Nuestro "diccionario" de términos
                                                     // Aquí se guardarán todos los términos de manera ordenada y enumerada
 
-    private static float[,]? D; // Nuestra matriz de apoyo para el modelo vectorial
+    private static Matrix D; // Nuestra matriz de apoyo para el modelo vectorial
                                 // En ella se implementa todo el modelo vectorial utilizando TF-IDF
 
     private static Dictionary<string, float>? queryTerms; // Los términos de nuestro query
     
-    private static float[]? q;// El vector de búsqueda o query
+    private static Vector q;// El vector de búsqueda o query
     #endregion
 
     public static SearchResult Query(string query) // Función principal, donde se empieza a computar el resultado de búsqueda 
@@ -85,7 +85,7 @@ public static class Moogle
 
     private static void Q(Dictionary<string, int> terms, string query) // Prepara el vector de búsqueda 
     {
-        float[] q = new float[terms.Count];
+        Moogle.q = new Vector(terms.Count);
 
         foreach (KeyValuePair<string, float> term in queryTerms)
         {
@@ -94,8 +94,6 @@ public static class Moogle
                 q[terms[term.Key]] = term.Value; // Guardar el valor del término en el i-ésimo elemento del vector
             }
         }
-
-        Moogle.q = q;
     }
 
     private static SearchItem[] Items() // Devuelve los resultados de búsqueda que más se asemejan al query 
@@ -136,7 +134,7 @@ public static class Moogle
         for (int i = 0; i < files.Length; i++)
         {
             // Se calcula la similitud vectorial del query (en fila) con cada columna de la matriz de términos
-            searchItems[i] = MathTools.SimCos(D, i, q);
+            searchItems[i] = Vector.SimCos(D, i, q);
         }
 
         for (int i = 0; i < searchItems.Count; i++)
