@@ -129,24 +129,18 @@ public static class Moogle
     private static Dictionary<int, float> CalculateScore() // Se calcula el score relacionado con cada documento 
     {
         Dictionary<int, float> searchItems = new Dictionary<int, float>();
-
-        // Cada documento se identifica con su posición "i" en el FileInfo[] files
-        for (int i = 0; i < files.Length; i++)
-        {
-            // Se calcula la similitud vectorial del query (en fila) con cada columna de la matriz de términos
-            searchItems[i] = Vector.SimCos(D, i, q);
-        }
+        Vector simCos = q.SimCos(D);            // Se calcula la similitud vectorial del query (en fila) con todas las columnas de la matriz de términos
 
         for (int i = 0; i < searchItems.Count; i++)
         {
-            if (searchItems[i] != 0)
+            if (simCos[i] != 0)
             {
-                // Si el documento es válido hasta ahora (el score es distinto de 0) 
-                // Se modifica el score por el uso de los operadores en el query
-                searchItems[i] = Operators.CheckOperators(searchItems[i], documentText[i]);
+                if (!searchItems.ContainsKey(i))
+                    searchItems[i] = Operators.CheckOperators(simCos[i], documentText[i]);  // Si el documento es válido hasta ahora (el score es distinto de 0) 
+                                                                                            // Se modifica el score por el uso de los operadores en el query
+                                                                                            // (Cada documento se identifica con su posición "i" en el FileInfo[] files)
             }
         }
-
         return searchItems;
     }
     #endregion
