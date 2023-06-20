@@ -61,7 +61,7 @@ public static class Moogle
 
     private static void QueryTerms(string query) // Carga todos los términos del query con un valor para el vector de búsqueda 
     {
-        Dictionary<string, float> queryTerms = new Dictionary<string, float>();
+        Moogle.queryTerms = new Dictionary<string, float>();
 
         foreach (string term in Terms.GetTerms(query))
         {
@@ -79,8 +79,6 @@ public static class Moogle
         }
 
         Operators.FindOperators(query, queryTerms); // Modificar el valor de los términos con el uso de operadores
-
-        Moogle.queryTerms = queryTerms;
     }
 
     private static void Q(Dictionary<string, int> terms, string query) // Prepara el vector de búsqueda 
@@ -131,7 +129,7 @@ public static class Moogle
         Dictionary<int, float> searchItems = new Dictionary<int, float>();
         Vector simCos = q.SimCos(D);            // Se calcula la similitud vectorial del query (en fila) con todas las columnas de la matriz de términos
 
-        for (int i = 0; i < searchItems.Count; i++)
+        for (int i = 0; i < simCos.Dimension; i++)
         {
             if (simCos[i] != 0)
             {
@@ -141,6 +139,7 @@ public static class Moogle
                                                                                             // (Cada documento se identifica con su posición "i" en el FileInfo[] files)
             }
         }
+
         return searchItems;
     }
     #endregion
