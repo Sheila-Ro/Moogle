@@ -117,7 +117,7 @@
 	 
 \subsection*{El Query}
 	Lo siguiente será calcular el vector del query.
-	Para esto utilizamos el diccionario de términos que guardamos anteriormente como léxico para saber el largo de nuestro vector, determinar si un término del query es parte dek léxico o no (si no lo es puede significar que es una palabra que puede existir pero que no nos interesa porque no aparece en ningún documento, o probablemente es una palabra mal escrita) y, en qué posiciones guardar los valores de los términos que aparecen en el query.
+	Para esto utilizamos el diccionario de términos que guardamos anteriormente como léxico para saber el largo de nuestro vector, determinar si un término del query es parte del léxico o no (si no lo es puede significar que es una palabra que puede existir pero que no nos interesa porque no aparece en ningún documento, o probablemente es una palabra mal escrita) y, en qué posiciones guardar los valores de los términos que aparecen en el query.
 	Calculando los valores del query con el algoritmo de Term Frequency (no necesitamos IDF porque el query es un único elemento; se pudiera considerar como si fuera un documento más, \textit{el documento de búsqueda}) ya tendríamos todo listo para calcular la similitud vectorial entre el quey y los vectores columna de los documentos.
 	
 \subsubsection*{Los Operadores en el Query}
