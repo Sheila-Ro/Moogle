@@ -1,23 +1,37 @@
 public class Matrix
 {
-    private float[,] matrix;
+    protected float[,] A;
 
     public Matrix(int m, int n) // Crea una instancia de la clase Matrix desde cero 
     {
-        this.matrix = new float[m, n];
+        this.A = new float[m, n];
     }
 
-    public Matrix(int[,] matrix) // Crea una instancia de la clase Matrix desde una matriz existente 
+    public Matrix(float[,] matrix) // Crea una instancia de la clase Matrix desde una matriz existente 
     {
-        this.matrix = new float[matrix.GetLength(0), matrix.GetLength(1)];
+        this.A = new float[matrix.GetLength(0), matrix.GetLength(1)];
 
         for (int i = 0; i < matrix.GetLength(0); i++)
         {
             for (int j = 0; j < matrix.GetLength(1); j++)
             {
-                this.matrix[i, j] = matrix[i, j];
+                this.A[i, j] = matrix[i, j];
             }
         }
+    }
+
+    public override string ToString()
+    {
+        string str = "";
+        for (int i = 0; i < this.GetRows; i++)
+        {
+            for (int j = 0; j < this.GetColumns; j++)
+            {
+                str += string.Format("[{0}]", this[i, j]);
+            }
+            str += "\n";
+        }
+        return str;
     }
 
     public float this[int i, int j] 
@@ -25,14 +39,14 @@ public class Matrix
         get 
         {
             if (i >= 0 && i < this.GetRows && j >= 0 && j < this.GetColumns) 
-                return matrix[i, j];
+                return A[i, j];
             else 
                 throw new IndexOutOfRangeException();
         }
         set 
         {
             if (i >= 0 && i < this.GetRows && j >= 0 && j < this.GetColumns) 
-                matrix[i, j] = value;
+                A[i, j] = value;
             else 
                 throw new IndexOutOfRangeException();
         }
@@ -40,18 +54,12 @@ public class Matrix
 
     public int GetRows 
     { 
-        get 
-        { 
-            return matrix.GetLength(0);
-        }
+        get { return A.GetLength(0); } 
     }
 
     public int GetColumns 
-    {
-        get 
-        {
-            return matrix.GetLength(1);
-        }
+    { 
+        get { return A.GetLength(1); } 
     }
 
     public Matrix Sum(Matrix other) // Devuelve la suma de dos matrices 
@@ -72,7 +80,7 @@ public class Matrix
         return result;
     }
 
-    public Matrix Sub(Matrix other) // Devuelsve la resta de dos matrices 
+    public Matrix Sub(Matrix other) // Devuelve la resta de dos matrices 
     {
         if (this.GetRows != other.GetRows || this.GetColumns != other.GetColumns)
             throw new IndexOutOfRangeException();
@@ -90,7 +98,22 @@ public class Matrix
         return result;
     }
 
-    public Matrix Mul(Matrix other) // Devuelve la multiplicación de matrices 
+    public Matrix MulEsc(float k) // Devuelve la multiplicación de una matriz por un escalar 
+    {
+        Matrix result = new Matrix(this.GetRows, this.GetColumns);
+
+        for (int i = 0; i < this.GetRows; i++)
+        {
+            for (int j = 0; j < this.GetColumns; j++)
+            {
+                result[i, j] = this[i, j] * k;
+            }
+        }
+
+        return result;
+    }
+
+    public Matrix Mul(Matrix other) // Devuelve la multiplicación de dos matrices 
     {
         if (this.GetColumns != other.GetRows)
             throw new IndexOutOfRangeException();
@@ -125,39 +148,112 @@ public class Matrix
 
         return transpose;
     }
+}
 
-    // public int Det 
-    // {
-    //     get 
-    //     {
-    //         if (this.GetRows != this.GetColumns) 
-    //             return 0;
+public class SquareMatrix : Matrix
+{
+    // Crea una matriz cuadrada desde cero
+    public SquareMatrix(int n) : base(n, n) { } 
 
-    //         int det = 0;
-    //         int n = this.GetRows;
+    // Crea una matriz cuadrada a partir de una matriz ya existente. Si la matriz existente no es cuadrada lanza una excepción
+    public SquareMatrix(float[,] matrix) : base(matrix)
+    {
+        if (matrix.GetLength(0) != matrix.GetLength(1))
+            throw new IndexOutOfRangeException();
+    }
 
-    //         throw new NotImplementedException();
-    //     }
-    // }
+    public int N // Orden de la matriz cuadrada (A e M_n(K))
+    {
+        get { return this.GetRows; }
+    }
 
-    // public int Cofactor() 
-    // {
-    //     throw new NotImplementedException();
-    // }
+    public float Det // Det(A), A e M_n(K)
+    {
+        get 
+        {
+            float det = 0;
 
-    // public int Menor()
-    // {
-    //     throw new NotImplementedException();
-    // }
+            if (this.N == 2)
+            {
+                det += this[0, 0]*this[1, 1] - this[1, 0]*this[0, 1]; // Det(A) = a_11*a_22 - a_12*a_21 
+            }
+            else if (this.N >= 3)
+            {
+                for (int i = 0; i < this.N; i++)
+                {
+                    det += this[0, i] * this.Cofactor(0, i); // Det(A) = a_i1*A_i1 + a_i2*A_i2 + ... + a_in*A_in
+                }
+            }
 
-    // public Matrix Inverse() 
-    // {
-    //     if (this.GetRows != this.GetColumns) 
-    //         throw new IndexOutOfRangeException();
+            return det;
+        }
+    }
 
-    //     int n = this.GetRows;
-    //     Matrix inverse = new Matrix(n, n);
+    public float Menor(int k, int l) // Devuelve el menor relacionado a la k-ésima fila y la l-ésima columna de la matriz dada 
+    {
+        SquareMatrix menor = new SquareMatrix(this.N - 1);
 
-    //     throw new NotImplementedException();
-    // }
+        int ni = 0;
+        int nj = 0;
+
+        for (int i = 0; i < this.N; i++)
+        {
+            for (int j = 0; j < this.N; j++)
+            {
+                if (i != k && j != l)
+                {
+                    menor[ni, nj++] += this[i, j];
+
+                    if (nj == menor.N)
+                    {
+                        ni++;
+                        nj = 0;
+                        
+                        if (ni == menor.N) break;
+                    }
+                }
+            }
+        }
+
+        return menor.Det;
+    }
+
+    public float Cofactor(int i, int j) // Devuelve el cofactor asociado al elemento (i,j) de una matriz 
+    {
+        return (Menor(i, j) == 0) ? 0 : (MathF.Pow(-1, i + j) * Menor(i, j)); // A_ij = (-1)^(i+j) * M_ij
+    }
+
+    public SquareMatrix CofactorMatrix() // Devuelve la matriz de cofactores de una matriz 
+    {
+        SquareMatrix result = new SquareMatrix(this.N);
+
+        for (int i = 0; i < this.N; i++)
+        {
+            for (int j = 0; j < this.N; j++)
+            {
+                result[i, j] = this.Cofactor(i, j);
+            }
+        }
+
+        return result;
+    }
+
+    public SquareMatrix Inverse() // Devuelve la inversa de una matriz 
+    {
+        if (this.Det == 0)
+            throw new Exception("Esta matriz no tiene inversa");
+        
+        Matrix adjunta = this.CofactorMatrix().Transpose();
+        SquareMatrix inverse = new SquareMatrix(this.N);
+
+        for (int i = 0; i < this.N; i++)
+        {
+            for (int j = 0; j < this.N; j++)
+            {
+                inverse[i, j] = adjunta[i, j] == 0 ? 0 : adjunta[i, j] / this.Det;
+            }
+        }
+
+        return inverse;
+    }
 }

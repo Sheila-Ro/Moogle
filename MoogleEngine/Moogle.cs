@@ -35,10 +35,10 @@ public static class Moogle
         {
             if (items.Length == 0)          // Si no hay resultados de búsqueda, devolver el resultado vacío
                 return new SearchResult();
-            else                            // Sino, devolver los resultados encontrados y una sugerencia de búsqueda
+            else                            // Si no, devolver los resultados encontrados y una sugerencia de búsqueda
                 return new SearchResult(items, Misc.Suggestion(query, terms, queryTerms));
         }
-        else                                // Sino, devolver solo los items
+        else                                // Si no, devolver solo los items
             return new SearchResult(items);
     }
 

@@ -8,7 +8,7 @@ public static class MathTools
 
         // TF (Term Frequency): TF(t, d) = f(t, d)/T(d)
         // * f(t, d): cantidad de veces que se repite un término en un documento 
-        // * T(d): cantidad total de términos del del documento
+        // * T(d): cantidad total de términos en el documento
 
         for (int j = 0; j < D.GetColumns; j++){                         // Por cada documento de la colección (esta será nuestra columna j)
             foreach (string term in documentText[j].Values)             // Por cada término que aparezca en el documento
@@ -18,7 +18,7 @@ public static class MathTools
             float count = 0;                                            // Guardar la cantidad total de términos del documento j
             for (int i = 0; i < D.GetRows; i++) count += D[i, j];
 
-            for (int i = 0; i < D.GetRows; i++) D[i, j] /= count;       // Y dividir cada los téminos por la cantidad total de términos
+            for (int i = 0; i < D.GetRows; i++) D[i, j] /= count;       // Y dividir cada uno de los téminos por la cantidad total de términos
         }
 
         // IDF (Inverse Document Frequency): idf(t, D) = log(n/DF(t, D)) + 1
@@ -38,7 +38,7 @@ public static class MathTools
 
         for (int j = 0; j < D.GetColumns; j++)  // Iterando por todas las columnas de documentos en una misma fila
             if (D[i, j] != 0)                   // Si el valor es cero es que el término no existe en este documento
-                df++;                           // Sino, entonces aumentar la cantidad de documentos que poseen este término
+                df++;                           // Si no, entonces aumentar la cantidad de documentos que poseen este término
 
         return df;
     }
